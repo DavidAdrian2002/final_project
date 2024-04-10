@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://127.0.0.1:5500/prueba.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Comidas</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Estilos para pantalla */
+        @media screen {
+            #left-panel {
+                flex: 1;
+            }
+
+            #right-panel {
+                flex: 1;
+                margin-left: 20px;
+            }
+
+            button {
+                display: block;
+                margin: 5px;
+                padding: 10px;
+                width: 150px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+            select {
+                width: 200px;
+                padding: 10px;
+                margin-top: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            #selected-items {
+                margin-top: 20px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            #total {
+                margin-top: 20px;
+                font-size: 18px;
+                font-weight: bold;
+                display: none;
+            }
+        }
+
+        /* Estilos para impresión */
+        @media print {
+            body {
+                margin: 0;
+            }
+
+            #left-panel,
+            #right-panel {
+                width: 50%;
+            }
+
+            #right-panel {
+                margin-left: 10px;
+            }
+
+            button,
+            select {
+                display: none;
+            }
+
+            #total {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="left-panel">
+        <h1>Lista de Comidas</h1>
+
+        <button onclick="showOptions(&#39;Sandwiches&#39;)">Sandwiches</button>
+        <button onclick="showOptions(&#39;Hamburguesas&#39;)">Hamburguesas</button>
+        <button onclick="showOptions(&#39;Pizzas&#39;)">Pizzas</button>
+
+        <select id="foodOptions" style="display: block;" multiple="">
+            <!-- Opciones se agregarán dinámicamente según el tipo de comida -->
+        <option value="Sandwich de Pollo" data-price="5.99">Sandwich de Pollo - $5.99</option><option value="Sandwich de Jamón" data-price="4.99">Sandwich de Jamón - $4.99</option><option value="Sandwich Vegetariano" data-price="6.99">Sandwich Vegetariano - $6.99</option></select>
+    </div>
+
+    <div id="right-panel">
+        <div id="selected-items">
+            <h2>Productos</h2>
+            <table id="selectedList">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedListBody"><tr><td>Sandwich de Pollo - $5.99</td><td>5.99</td></tr><tr><td>Sandwich de Jamón - $4.99</td><td>4.99</td></tr></tbody>
+            </table>
+        </div>
+
+        <button onclick="addToSelectedList()">Agregar Producto</button>
+        <button onclick="sumarTotal()">Sumar Total</button>
+        <div id="total" style="display: block;">Total: $<span id="totalAmount">10.98</span></div>
+    </div>
+
+    <script>
+        function showOptions(foodType) {
+            var foodOptions = document.getElementById('foodOptions');
+
+            // Mostrar el menú desplegable y opciones correspondientes
+            foodOptions.style.display = 'block';
+
+            // Puedes cargar opciones específicas según el tipo de comida seleccionado
+            // En este ejemplo, simplemente estamos reemplazando las opciones actuales con nuevas
+            while (foodOptions.options.length > 0) {
+                foodOptions.remove(0);
+            }
+
+            if (foodType === 'Sandwiches') {
+                addOption('Sandwich de Pollo', 5.99);
+                addOption('Sandwich de Jamón', 4.99);
+                addOption('Sandwich Vegetariano', 6.99);
+            } else if (foodType === 'Hamburguesas') {
+                addOption('Hamburguesa con Queso', 7.99);
+                addOption('Hamburguesa Doble', 9.99);
+                addOption('Hamburguesa Vegetariana', 8.99);
+            } else if (foodType === 'Pizzas') {
+                addOption('Pizza de Pepperoni', 10.99);
+                addOption('Pizza Margarita', 9.99);
+                addOption('Pizza Vegetariana', 11.99);
+            }
+        }
+
+        function addOption(optionText, price) {
+            var option = document.createElement('option');
+            option.value = optionText;
+            option.text = optionText + ' - $' + price.toFixed(2);
+            option.setAttribute('data-price', price.toFixed(2));
+            document.getElementById('foodOptions').add(option);
+        }
+
+        function addToSelectedList() {
+            var selectedListBody = document.getElementById('selectedListBody');
+            var selectedOptions = document.getElementById('foodOptions').selectedOptions;
+
+            // Agregar las opciones seleccionadas a la lista
+            for (var i = 0; i < selectedOptions.length; i++) {
+                var row = selectedListBody.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+
+                cell1.textContent = selectedOptions[i].text;
+                cell2.textContent = getPrice(selectedOptions[i].value);
+            }
+
+            // Limpiar la selección en el menú desplegable
+            document.getElementById('foodOptions').selectedIndex = -1;
+
+            // Actualizar el total al agregar una nueva opción
+            sumarTotal();
+        }
+
+        function getPrice(optionText) {
+            var selectedOptions = document.getElementById('foodOptions').options;
+            for (var i = 0; i < selectedOptions.length; i++) {
+                if (selectedOptions[i].text.includes(optionText)) {
+                    return selectedOptions[i].getAttribute('data-price');
+                }
+            }
+            return 0.00;
+        }
+
+        function sumarTotal() {
+            var totalAmount = 0;
+            var selectedListBody = document.getElementById('selectedListBody');
+
+            // Sumar los precios de los productos en la lista
+            for (var i = 0; i < selectedListBody.rows.length; i++) {
+                totalAmount += parseFloat(selectedListBody.rows[i].cells[1].textContent);
+            }
+
+            // Actualizar el total en la interfaz
+            var totalElement = document.getElementById('totalAmount');
+            totalElement.textContent = totalAmount.toFixed(2);
+
+            // Mostrar el total solo cuando se hace clic en "Sumar Total"
+            var totalDiv = document.getElementById('total');
+            totalDiv.style.display = 'block';
+        }
+    </script>
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+
+
+
+
+
+
+</body></html>

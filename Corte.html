@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/cortecaja.css">
+    <title>Tabla de Ventas</title>
+  
+</head>
+<body>
+    <h1>Tabla de Ventas</h1>
+    <table id="tabla-ventas">
+        <thead>
+            <tr>
+                <th>Mesa #</th>
+                <th>Cant_Productos</th>
+                <th>Total</th>
+                <th>Total_Efectivo</th>
+                <th>Total_Targeta</th>
+                <th>Total_Transf</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se insertarán las filas dinámicamente -->
+        </tbody>
+    </table>
+
+    <h2>Registrar Venta</h2>
+    <form id="formulario-venta">
+        <label for="mesa">Número de Mesa:</label>
+        <input type="number" id="mesa" name="mesa" required>
+        <label for="total">Total:</label>
+        <input type="number" id="total" name="total" step="0.01" required>
+        <label for="metodo">Método de Pago:</label>
+        <select id="metodo" name="metodo">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+        </select>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <script>
+        const formularioVenta = document.getElementById('formulario-venta');
+        const tablaVentas = document.getElementById('tabla-ventas').getElementsByTagName('tbody')[0];
+
+        formularioVenta.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const mesa = parseInt(document.getElementById('mesa').value);
+            const total = parseFloat(document.getElementById('total').value);
+            const metodoPago = document.getElementById('metodo').value;
+
+            // Crear una nueva fila para la tabla
+            const nuevaFila = document.createElement('tr');
+
+            // Insertar celdas en la fila
+            const celdaMesa = document.createElement('td');
+            celdaMesa.textContent = mesa;
+            nuevaFila.appendChild(celdaMesa);
+
+            const celdaCantidad = document.createElement('td');
+            celdaCantidad.textContent = 0; // Por defecto, se establece en 0
+            nuevaFila.appendChild(celdaCantidad);
+
+            const celdaTotal = document.createElement('td');
+            celdaTotal.textContent = total;
+            nuevaFila.appendChild(celdaTotal);
+
+            const celdaEfectivo = document.createElement('td');
+            const celdaTarjeta = document.createElement('td');
+            const celdaTransferencia = document.createElement('td');
+
+            // Dependiendo del método de pago, se establece el valor en la celda correspondiente
+            switch (metodoPago) {
+                case 'Efectivo':
+                    celdaEfectivo.textContent = total;
+                    celdaTarjeta.textContent = 0;
+                    celdaTransferencia.textContent = 0;
+                    break;
+                case 'Tarjeta':
+                    celdaEfectivo.textContent = 0;
+                    celdaTarjeta.textContent = total;
+                    celdaTransferencia.textContent = 0;
+                    break;
+                case 'Transferencia':
+                    celdaEfectivo.textContent = 0;
+                    celdaTarjeta.textContent = 0;
+                    celdaTransferencia.textContent = total;
+                    break;
+                default:
+                    break;
+            }
+
+            nuevaFila.appendChild(celdaEfectivo);
+            nuevaFila.appendChild(celdaTarjeta);
+            nuevaFila.appendChild(celdaTransferencia);
+
+            // Agregar la nueva fila a la tabla
+            tablaVentas.appendChild(nuevaFila);
+
+            // Limpiar el formulario
+            formularioVenta.reset();
+        });
+    </script>
+</body>
+</html>
+

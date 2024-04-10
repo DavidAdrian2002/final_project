@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Satisfy&display=swap');
+
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+body{
+    background: linear-gradient(
+     rgba(0,0,0,0.4),
+     rgba(0,0,0,0.4)
+     ),
+    url(../images/Fondo-pag-pri.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.bottom-1{
+    margin: 50px;
+    margin-top: 180px;
+}
+
+.bottom-1 img{
+    width: 250px;
+    height: 200px;
+    
+    
+    
+}
+.bottom-1 h2{
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+.bottom-1 img:hover{
+    transform: scale(1.1);
+    transition: all 1.0s;
+}

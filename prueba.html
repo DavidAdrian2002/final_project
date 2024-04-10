@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/pruebajs.css">
+    <title>Lista de Comidas</title>
+   
+</head>
+<body>
+
+    <div id="left-panel">
+        <h1>Lista de Comidas</h1>
+
+        <button onclick="showOptions('Sandwiches')">Sandwiches</button>
+        <button onclick="showOptions('Hamburguesas')">Hamburguesas</button>
+        <button onclick="showOptions('Pizzas')">Pizzas</button>
+
+        <select id="foodOptions" style="display: none;" multiple>
+            <!-- Opciones se agregarán dinámicamente según el tipo de comida -->
+        </select>
+    </div>
+
+    <div id="right-panel">
+        <div id="selected-items">
+            <h2>Productos</h2>
+            <table id="selectedList">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedListBody"></tbody>
+            </table>
+        </div>
+
+        <button onclick="addToSelectedList()">Agregar Producto</button>
+        <button onclick="sumarTotal()">Sumar Total</button>
+        <div id="total">Total: $<span id="totalAmount">0.00</span></div>
+    </div>
+
+    <script>
+        function showOptions(foodType) {
+            var foodOptions = document.getElementById('foodOptions');
+
+            // Mostrar el menú desplegable y opciones correspondientes
+            foodOptions.style.display = 'block';
+
+            // Puedes cargar opciones específicas según el tipo de comida seleccionado
+            // En este ejemplo, simplemente estamos reemplazando las opciones actuales con nuevas
+            while (foodOptions.options.length > 0) {
+                foodOptions.remove(0);
+            }
+
+            if (foodType === 'Sandwiches') {
+                addOption('Sandwich de Pollo', 5.99);
+                addOption('Sandwich de Jamón', 4.99);
+                addOption('Sandwich Vegetariano', 6.99);
+            } else if (foodType === 'Hamburguesas') {
+                addOption('Hamburguesa con Queso', 7.99);
+                addOption('Hamburguesa Doble', 9.99);
+                addOption('Hamburguesa Vegetariana', 8.99);
+            } else if (foodType === 'Pizzas') {
+                addOption('Pizza de Pepperoni', 10.99);
+                addOption('Pizza Margarita', 9.99);
+                addOption('Pizza Vegetariana', 11.99);
+            }
+        }
+
+        function addOption(optionText, price) {
+            var option = document.createElement('option');
+            option.value = optionText;
+            option.text = optionText + ' - $' + price.toFixed(2);
+            option.setAttribute('data-price', price.toFixed(2));
+            document.getElementById('foodOptions').add(option);
+        }
+
+        function addToSelectedList() {
+            var selectedListBody = document.getElementById('selectedListBody');
+            var selectedOptions = document.getElementById('foodOptions').selectedOptions;
+
+            // Agregar las opciones seleccionadas a la lista
+            for (var i = 0; i < selectedOptions.length; i++) {
+                var row = selectedListBody.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+
+                cell1.textContent = selectedOptions[i].text;
+                cell2.textContent = getPrice(selectedOptions[i].value);
+            }
+
+            // Limpiar la selección en el menú desplegable
+            document.getElementById('foodOptions').selectedIndex = -1;
+
+            // Actualizar el total al agregar una nueva opción
+            sumarTotal();
+        }
+
+        function getPrice(optionText) {
+            var selectedOptions = document.getElementById('foodOptions').options;
+            for (var i = 0; i < selectedOptions.length; i++) {
+                if (selectedOptions[i].text.includes(optionText)) {
+                    return selectedOptions[i].getAttribute('data-price');
+                }
+            }
+            return 0.00;
+        }
+
+        function sumarTotal() {
+            var totalAmount = 0;
+            var selectedListBody = document.getElementById('selectedListBody');
+
+            // Sumar los precios de los productos en la lista
+            for (var i = 0; i < selectedListBody.rows.length; i++) {
+                totalAmount += parseFloat(selectedListBody.rows[i].cells[1].textContent);
+            }
+
+            // Actualizar el total en la interfaz
+            var totalElement = document.getElementById('totalAmount');
+            totalElement.textContent = totalAmount.toFixed(2);
+
+            // Mostrar el total solo cuando se hace clic en "Sumar Total"
+            var totalDiv = document.getElementById('total');
+            totalDiv.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
